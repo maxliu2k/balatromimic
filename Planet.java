@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
@@ -15,29 +14,29 @@ class Planet extends Consumable {
 		using = false;
 		images = new Image[12];
 		try {
-			BufferedImage temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\pluto.png"));
+			BufferedImage temp = ImageIO.read(Planet.class.getResourceAsStream("Important/pluto.png"));
 			images[0] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\mercury.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/mercury.png"));
 			images[1] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\uranus.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/uranus.png"));
 			images[2] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\venus.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/venus.png"));
 			images[3] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\saturn.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/saturn.png"));
 			images[4] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\jupiter.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/jupiter.png"));
 			images[5] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\earth.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/earth.png"));
 			images[6] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\mars.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/mars.png"));
 			images[7] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\neptune.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/neptune.png"));
 			images[8] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\planetx.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/planetx.png"));
 			images[9] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\ceres.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/ceres.png"));
 			images[10] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Planet.class.getResourceAsStream("Important\\eris.png"));
+			temp = ImageIO.read(Planet.class.getResourceAsStream("Important/eris.png"));
 			images[11] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
 		} catch (Exception e) {}
 	}
@@ -115,3 +114,4 @@ class Planet extends Consumable {
 			return true;
 	}
 }
+

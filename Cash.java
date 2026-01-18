@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 import java.util.*;
 
@@ -137,3 +136,4 @@ class Cash extends Screen {
 		}
 	}
 }
+

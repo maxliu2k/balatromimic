@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 import java.awt.geom.*;
 
@@ -58,3 +57,4 @@ abstract class Interactable {
 		return (int) Math.ceil((amp*Math.sin((Panel.time + var)/freq)));
 	}
 }
+

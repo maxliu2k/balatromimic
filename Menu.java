@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
@@ -21,9 +20,9 @@ class Menu extends Screen {
 		Joker.initialize();
 		first = false;
 		try {
-			BufferedImage temp = ImageIO.read(Menu.class.getResourceAsStream("Important\\menu.png"));
+			BufferedImage temp = ImageIO.read(Menu.class.getResourceAsStream("Important/menu.png"));
 			back = temp.getScaledInstance(1500, 1500, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Menu.class.getResourceAsStream("Important\\gray.png"));
+			temp = ImageIO.read(Menu.class.getResourceAsStream("Important/gray.png"));
 			gray = temp.getScaledInstance(1500, 1500, Image.SCALE_SMOOTH);
 		} catch (Exception e) {}
 		count = 0;
@@ -107,3 +106,4 @@ class Menu extends Screen {
 		if (Panel.time > 4*55 && first) battle.draw(g);
 	}
 }
+

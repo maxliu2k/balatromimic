@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 import javax.swing.*; 
 import java.awt.event.*;
@@ -38,7 +37,7 @@ class Panel extends JPanel implements ActionListener, KeyListener, MouseListener
     		if (secret)
     			font = "undertale-wingdings.otf"; 
     		try {
-    			InputStream fontFile = Playing.class.getResourceAsStream("Important\\" + font);
+    			InputStream fontFile = Playing.class.getResourceAsStream("Important/" + font);
                 if (secret)
                 	customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont((float) i / 2);
                 else
@@ -91,6 +90,10 @@ class Panel extends JPanel implements ActionListener, KeyListener, MouseListener
         int drawHeight = (int) (internalH * scale);
         int x = (w - drawWidth) / 2;
         int y = (h - drawHeight) / 2;
+
+        // Fill letterbox/pillarbox with black instead of default background.
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, w, h);
 
         // Use nearest-neighbor to preserve the crisp pixel look
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -145,3 +148,4 @@ class Panel extends JPanel implements ActionListener, KeyListener, MouseListener
 		time++;
 	}
 }
+

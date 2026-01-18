@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
@@ -15,19 +14,19 @@ class Playing extends Editionable {
 	static void initialize() {
 		//load suit images
 		try {
-			BufferedImage temp = ImageIO.read(Playing.class.getResourceAsStream("Important\\heart.png"));
+			BufferedImage temp = ImageIO.read(Playing.class.getResourceAsStream("Important/heart.png"));
 			heart = temp.getScaledInstance(66, 62, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Playing.class.getResourceAsStream("Important\\club.png"));
+			temp = ImageIO.read(Playing.class.getResourceAsStream("Important/club.png"));
 			club = temp.getScaledInstance(66, 68, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Playing.class.getResourceAsStream("Important\\diamond.png"));
+			temp = ImageIO.read(Playing.class.getResourceAsStream("Important/diamond.png"));
 			diamond = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Playing.class.getResourceAsStream("Important\\spade.png"));
+			temp = ImageIO.read(Playing.class.getResourceAsStream("Important/spade.png"));
 			spade = temp.getScaledInstance(66, 76, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Playing.class.getResourceAsStream("Important\\king.png"));
+			temp = ImageIO.read(Playing.class.getResourceAsStream("Important/king.png"));
 			king = temp.getScaledInstance(35, 35, Image.SCALE_DEFAULT);
-			temp = ImageIO.read(Playing.class.getResourceAsStream("Important\\queen.png"));
+			temp = ImageIO.read(Playing.class.getResourceAsStream("Important/queen.png"));
 			queen = temp.getScaledInstance(35, 35, Image.SCALE_DEFAULT);
-			temp = ImageIO.read(Playing.class.getResourceAsStream("Important\\jack.png"));
+			temp = ImageIO.read(Playing.class.getResourceAsStream("Important/jack.png"));
 			jack = temp.getScaledInstance(35, 35, Image.SCALE_DEFAULT);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -344,3 +343,4 @@ class Playing extends Editionable {
 		g2d.setTransform(old);
 	}
 }
+

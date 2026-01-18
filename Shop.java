@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 
 class Shop extends Screen {
@@ -153,3 +152,4 @@ class Shop extends Screen {
 		}
 	}
 }
+

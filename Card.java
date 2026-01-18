@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 
 abstract class Card extends Interactable {
@@ -44,3 +43,4 @@ abstract class Card extends Interactable {
 		draw(g, 3, c1, c2);
 	}
 }
+

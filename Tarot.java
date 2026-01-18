@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
@@ -14,49 +13,49 @@ class Tarot extends Consumable{
 	static void initialize() {
 		images = new Image[22];
 		try {
-			BufferedImage temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\fool.png"));
+			BufferedImage temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/fool.png"));
 			images[0] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\magician.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/magician.png"));
 			images[1] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\high-priestess.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/high-priestess.png"));
 			images[2] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\empress.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/empress.png"));
 			images[3] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\emperor.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/emperor.png"));
 			images[4] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\hierophant.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/hierophant.png"));
 			images[5] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\lovers.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/lovers.png"));
 			images[6] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\chariot.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/chariot.png"));
 			images[7] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\strength.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/strength.png"));
 			images[8] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\hermit.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/hermit.png"));
 			images[9] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\wheel.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/wheel.png"));
 			images[10] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\justice.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/justice.png"));
 			images[11] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\hanged-man.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/hanged-man.png"));
 			images[12] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\death.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/death.png"));
 			images[13] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\temperance.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/temperance.png"));
 			images[14] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\devil.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/devil.png"));
 			images[15] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\tower.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/tower.png"));
 			images[16] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\star.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/star.png"));
 			images[17] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\moon.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/moon.png"));
 			images[18] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\sun.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/sun.png"));
 			images[19] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\judgement.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/judgement.png"));
 			images[20] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
-			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important\\world.png"));
+			temp = ImageIO.read(Tarot.class.getResourceAsStream("Important/world.png"));
 			images[21] = temp.getScaledInstance(70, 70, Image.SCALE_SMOOTH);
 		} catch (Exception e) {}
 	}
@@ -745,3 +744,4 @@ class Tarot extends Consumable{
 		Sidebar.pd.text = "";
 	}
 }
+

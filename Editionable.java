@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 
 abstract class Editionable extends Card {
@@ -28,3 +27,4 @@ abstract class Editionable extends Card {
 		return null;
 	}
 }
+

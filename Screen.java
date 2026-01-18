@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 
 abstract class Screen {
@@ -7,3 +6,4 @@ abstract class Screen {
 	abstract void check(int x, int y);
 	abstract void draw(Graphics g);
 }
+

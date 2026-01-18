@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.*;
@@ -19,8 +18,6 @@ class Battle extends Screen {
 	static int initSize;
 	static int score;
 	static boolean lose;
-	static Button deckSize;
-	static int transitionAlpha = -1;
 	void initialize() {
 		//create buttons
 		play = new Button(350, 560, 200, 105, "play hand", "Play Hand", Color.DARK_GRAY);
@@ -250,3 +247,4 @@ class Battle extends Screen {
 		g2d.setComposite(oldc);
 	}
 }
+

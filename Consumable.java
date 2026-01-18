@@ -1,4 +1,3 @@
-package game;
 import java.awt.*;
 
 abstract class Consumable extends Card {
@@ -7,3 +6,4 @@ abstract class Consumable extends Card {
 	abstract boolean useable();
 	abstract void use();
 }
+
