@@ -10,7 +10,7 @@ abstract class Editionable extends Card {
 		else if (edition == 'H')
 			return new Color(160, 120, 80 + d(80));
 		else if (edition == 'P') {
-			int current = 10 * (int) (Panel.time + (int) var);
+			int current = (int) (10 * (Panel.renderTime + var));
 			if (current % 1530 < 255)
 				return new Color(255, current%255, 0);
 			else if (current % 1530 < 510)
@@ -27,4 +27,5 @@ abstract class Editionable extends Card {
 		return null;
 	}
 }
+
 

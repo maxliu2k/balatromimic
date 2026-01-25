@@ -77,6 +77,12 @@ class Tarot extends Consumable{
 		Graphics2D g2d = (Graphics2D) g;
 		AffineTransform old = g2d.getTransform();
 		g2d.rotate((double) wobble/300, x + l/2.0, y + w/2.0);
+		double scale = wobbleScale();
+		double cx = x + l/2.0;
+		double cy = y + w/2.0;
+		g2d.translate(cx, cy);
+		g2d.scale(scale, scale);
+		g2d.translate(-cx, -cy);
 		super.draw(g, override ? border : selected ? Color.BLACK : temp.darker(), temp);
 		g2d.rotate((double) 0.4*wobble/300, x + l/2.0, y + w/2.0);
 		Composite oldc = g2d.getComposite();
@@ -211,7 +217,7 @@ class Tarot extends Consumable{
 		try {Thread.sleep(1000);} catch (InterruptedException e) {}
 		if (name.equals("Fool")) {
 			selected = true;
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (wobble > -50) {
 					wobble -= 1;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -224,7 +230,7 @@ class Tarot extends Consumable{
 					wobble -= 0.5;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
 				}
-			}).start();
+			});
 			Sidebar.cons.add(Sidebar.last);
 			try {Thread.sleep(250);} catch (InterruptedException e) {}
 			selected = false;
@@ -233,7 +239,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Magician")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -246,7 +252,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.enhancement = 'L';
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -257,7 +263,7 @@ class Tarot extends Consumable{
 			for (int i = 0; i < 2; i++) {
 				if (Sidebar.cslots > Sidebar.cons.size()) {
 					selected = true;
-					new Thread(() -> {
+					Animator.run(() -> {
 						while (wobble > -50) {
 							wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -270,7 +276,7 @@ class Tarot extends Consumable{
 							wobble -= 0.5;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 					Sidebar.cons.add(Planet.get());
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
 					selected = false;
@@ -281,7 +287,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Empress")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -294,7 +300,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.enhancement = 'M';
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -305,7 +311,7 @@ class Tarot extends Consumable{
 			for (int i = 0; i < 2; i++) {
 				if (Sidebar.cslots > Sidebar.cons.size()) {
 					selected = true;
-					new Thread(() -> {
+					Animator.run(() -> {
 						while (wobble > -50) {
 							wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -318,7 +324,7 @@ class Tarot extends Consumable{
 							wobble -= 0.5;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 					Sidebar.cons.add(Tarot.get());
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
 					selected = false;
@@ -339,7 +345,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Lovers")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -352,7 +358,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.enhancement = 'W';
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -362,7 +368,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Chariot")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -375,7 +381,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.enhancement = 'S';
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -385,7 +391,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Strength")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -398,7 +404,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				int index = 0;
 				for (int i = 0; i < Playing.ranks.length; i++)
 					if (Playing.ranks[i].equals(c.rank))
@@ -438,7 +444,7 @@ class Tarot extends Consumable{
 			Sidebar.addMoney(this, Color.BLACK, Math.min(Math.max(0, Sidebar.money), 20));
 		else if (name.equals("Wheel of Fortune")) {
 			override = true;
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (wobble > -50) {
 					wobble -= 1;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -451,7 +457,7 @@ class Tarot extends Consumable{
 					wobble -= 0.5;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
 				}
-			}).start();
+			});
 			if (Math.random() < 0.25/Sidebar.threshold) {
 				border = Color.GREEN;
 				Joker j = Sidebar.jokers.get((int) (Sidebar.jokers.size()*Math.random()));
@@ -474,7 +480,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Justice")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -487,7 +493,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.enhancement = 'A';
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -497,7 +503,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Hanged Man")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -510,8 +516,8 @@ class Tarot extends Consumable{
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
-				new Thread(() -> {
+				});
+				Animator.run(() -> {
 					c.override = true;
 					c.temp = Color.WHITE;
 					c.breaking = true;
@@ -521,7 +527,7 @@ class Tarot extends Consumable{
 					}
 					Battle.hand.remove(c);
 					Sidebar.deck.remove(c);
-				}).start();
+				});
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -529,7 +535,7 @@ class Tarot extends Consumable{
 		}
 		else if (name.equals("Death")) {
 			selected = true;
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (wobble > -50) {
 					wobble -= 1;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -542,7 +548,7 @@ class Tarot extends Consumable{
 					wobble -= 0.5;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
 				}
-			}).start();
+			});
 			ArrayList<Playing> deaths = new ArrayList<>(selset);
 			Playing first = Battle.hand.get(Math.min(Battle.hand.indexOf(deaths.get(0)), Battle.hand.indexOf(deaths.get(1))));
 			Playing second = Battle.hand.get(Math.max(Battle.hand.indexOf(deaths.get(0)), Battle.hand.indexOf(deaths.get(1))));
@@ -570,7 +576,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Devil")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -583,7 +589,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.enhancement = 'G';
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -593,7 +599,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Tower")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -606,7 +612,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.enhancement = 'T';
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -616,7 +622,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Star")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -629,7 +635,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.suit = "Diamonds";
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -639,7 +645,7 @@ class Tarot extends Consumable{
 		else if (name.equals("Moon")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -652,7 +658,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.suit = "Clubs";
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -661,7 +667,7 @@ class Tarot extends Consumable{
 		}
 		else if (name.equals("Sun")) {
 			for (Playing c : selset) {
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -674,7 +680,7 @@ class Tarot extends Consumable{
 						wobble -= 0.5;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.suit = "Hearts";
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -683,7 +689,7 @@ class Tarot extends Consumable{
 		}
 		else if (name.equals("Judgement")) {
 			selected = true;
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (wobble > -50) {
 					wobble -= 1;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -696,7 +702,7 @@ class Tarot extends Consumable{
 					wobble -= 0.5;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
 				}
-			}).start();
+			});
 			Joker j = Joker.get();
 			Sidebar.jokers.add(j);
 			j.bought();
@@ -707,7 +713,7 @@ class Tarot extends Consumable{
 		else if (name.equals("World")) {
 			for (Playing c : selset) {
 				selected = true;
-				new Thread(() -> {
+				Animator.run(() -> {
 					while (wobble > -50) {
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -720,7 +726,7 @@ class Tarot extends Consumable{
 						wobble -= 1;
 						try {Thread.sleep(1);} catch (InterruptedException e) {};
 					}
-				}).start();
+				});
 				c.suit = "Spades";
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				selected = false;
@@ -744,4 +750,5 @@ class Tarot extends Consumable{
 		Sidebar.pd.text = "";
 	}
 }
+
 

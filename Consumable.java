@@ -7,3 +7,4 @@ abstract class Consumable extends Card {
 	abstract void use();
 }
 
+

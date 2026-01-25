@@ -62,6 +62,12 @@ class Planet extends Consumable {
 		Graphics2D g2d = (Graphics2D) g;
 		AffineTransform old = g2d.getTransform();
 		g2d.rotate((double) wobble/300, x + l/2.0, y + w/2.0);
+		double scale = wobbleScale();
+		double cx = x + l/2.0;
+		double cy = y + w/2.0;
+		g2d.translate(cx, cy);
+		g2d.scale(scale, scale);
+		g2d.translate(-cx, -cy);
 		super.draw(g, selected ? Color.BLACK : temp.darker(), temp);
 		g2d.setColor(new Color(52, 161, 184).darker());
 		g2d.rotate((double) 0.5*wobble/300, x + l/2.0, y + w/2.0);
@@ -114,4 +120,5 @@ class Planet extends Consumable {
 			return true;
 	}
 }
+
 

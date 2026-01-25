@@ -51,10 +51,11 @@ abstract class Interactable {
 		g2d.setTransform(old);
 	}
 	int d(double amp) {
-		return (int) Math.ceil((amp*Math.sin((Panel.time + var)/((var % 3 + 5)))));
+		return (int) Math.ceil((amp*Math.sin((Panel.renderTime + var)/((var % 3 + 5)))));
 	}
 	int d(double amp, double freq) {
-		return (int) Math.ceil((amp*Math.sin((Panel.time + var)/freq)));
+		return (int) Math.ceil((amp*Math.sin((Panel.renderTime + var)/freq)));
 	}
 }
+
 

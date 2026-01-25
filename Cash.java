@@ -7,9 +7,18 @@ class Cash extends Screen {
 	static Button back;
 	static ArrayList<Button> list;
 	static Button out;
+	static boolean transitionActive;
+	static boolean transitionOverlayStarted;
+	static double transitionStart;
+	static int outBaseX;
+	static int outBaseY;
+	static int outBaseL;
+	static int outBaseW;
 	void initialize() {
 		money = 0;
 		init = Long.MAX_VALUE;
+		transitionActive = false;
+		transitionOverlayStarted = false;
 		back = new Button(400, 220, 800, 800, "", "", Color.DARK_GRAY);
 		list = new ArrayList<>();
 		int reward = 0;
@@ -53,7 +62,11 @@ class Cash extends Screen {
 		out.setFormat(100, 70, 50, 0);
 		out.wobble = 10;
 		out.vib = 20;
-		new Thread(() -> {
+		outBaseX = out.x;
+		outBaseY = out.y;
+		outBaseL = out.l;
+		outBaseW = out.w;
+		Animator.run(() -> {
 			try {Thread.sleep(1000);} catch (InterruptedException e) {}
 			for (int j = 255; j > 1; j-=1) {
 				Sidebar.blindColor = new Color(Sidebar.blindColor.getRed(),Sidebar.blindColor.getGreen(),Sidebar.blindColor.getBlue(), j);
@@ -61,9 +74,51 @@ class Cash extends Screen {
 			}
 			Sidebar.db = false;
 			init = Panel.time;
-		}).start();
+		});
+	}
+	static void startCashTransition() {
+		if (transitionActive || Panel.isTransitioning())
+			return;
+		Battle.playing = true;
+		transitionActive = true;
+		transitionOverlayStarted = false;
+		transitionStart = Panel.renderTime;
+		out.text = "";
+	}
+	static void finishToShop() {
+		Panel.screens[3] = new Shop();
+		Panel.screens[3].initialize();
+		Sidebar.db = true;
+		Sidebar.hands = Sidebar.maxHands;
+		Sidebar.discs = Sidebar.maxDiscs;
+		Sidebar.hd.color = new Color(70, 150, 255);
+		Sidebar.dd.color = Color.RED;
+		if (Sidebar.blind.equals("Small")) {
+			Sidebar.objective = (int) (Sidebar.levelValues[Sidebar.ante] * 1.5);
+			Sidebar.bd.color = new Color(200, 150, 0);
+			Sidebar.blindColor = new Color(200, 150, 0);
+			Sidebar.bd.setFormat(95, 40, 25, 0);
+			Sidebar.blind = "Big";
+		}
+		else if (Sidebar.blind.equals("Big")) {
+			Sidebar.objective = (int) (Sidebar.levelValues[Sidebar.ante] * 2);
+			Sidebar.bd.color = Color.RED;
+			Sidebar.blindColor = Color.RED;
+			Sidebar.bd.setFormat(85, 40, 25, 0);
+			Sidebar.blind = "Boss";
+		}
+		else if (Sidebar.blind.equals("Boss")) {
+			Sidebar.objective = (int) (Sidebar.levelValues[Sidebar.ante]);
+			Sidebar.bd.color = Color.BLUE;
+			Sidebar.blindColor = Color.BLUE;
+			Sidebar.bd.setFormat(80, 40, 25, 0);
+			Sidebar.blind = "Small";
+		}
+		Battle.playing = false;
 	}
 	void check(int x, int y) {
+		if (transitionActive || Panel.isTransitioning())
+			return;
 		if (Panel.time - init > 2*5 + 2*10*list.size())
 			Panel.side.check(x, y);
 		if (Sidebar.id)
@@ -82,7 +137,7 @@ class Cash extends Screen {
 			if (Panel.time - init >= 2*5 + 2*10*i) {
 				if (list.get(i).hold != null && Panel.time - init == 2*5 + 2*10*i) {
 					Joker j = list.get(i).hold;
-					new Thread(() -> {
+					Animator.run(() -> {
 						j.selected = true;
 						j.override = true;
 						j.border = Color.BLACK;
@@ -90,8 +145,8 @@ class Cash extends Screen {
 						j.border = j.original;
 						j.selected = false;
 						j.override = false;
-					}).start();
-					new Thread(() -> {
+					});
+					Animator.run(() -> {
 						while (j.wobble > -50) {
 							j.wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -104,7 +159,7 @@ class Cash extends Screen {
 							j.wobble -= 0.5;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 				}
 				list.get(i).draw(g);
 				g.setFont(Panel.fonts[20]);
@@ -112,7 +167,7 @@ class Cash extends Screen {
 			}
 		}
 		Panel.side.draw(g);
-		if (Panel.time - init > 2*5 + 2*10*list.size())
+		if (Panel.time - init > 2*5 + 2*10*list.size() && !transitionActive)
 			out.draw(g);
 		if (Sidebar.id)
 			Panel.side.draw(g);
@@ -122,17 +177,26 @@ class Cash extends Screen {
 			g.setColor(new Color(80, 80, 80));
 			g.fillRect(0, 0, 1280, 720);
 		}
-		if (alpha > 0) {
-			alpha -= 10;
-			if (alpha < 0) {
-				alpha = 0;
-				return;
+		if (transitionActive) {
+			double elapsed = Panel.renderTime - transitionStart;
+			double buttonDuration = 15.0;
+			double t = Math.min(1.0, elapsed / buttonDuration);
+			double scale = 1.0 - 0.6 * t;
+			int newL = (int) Math.round(outBaseL * scale);
+			int newW = (int) Math.round(outBaseW * scale);
+			out.l = Math.max(1, newL);
+			out.w = Math.max(1, newW);
+			out.x = outBaseX + (outBaseL - out.l) / 2;
+			out.y = outBaseY + (outBaseW - out.w) / 2;
+			int alpha = (int) Math.round(255 * (1.0 - t));
+			out.color = new Color(200, 150, 0, Math.max(0, Math.min(255, alpha)));
+			out.text = "";
+			out.draw(g);
+			if (!transitionOverlayStarted && elapsed >= buttonDuration) {
+				transitionOverlayStarted = true;
+				transitionActive = false;
+				Panel.startTransition(3, new Color(200, 150, 0), Cash::finishToShop);
 			}
-			if (Panel.s == 2)
-				g.setColor(new Color(80, 80, 80, alpha));
-			else
-				g.setColor(new Color(200, 150, 0, alpha));
-			g.fillRect(0, 0, 1280, 720);
 		}
 	}
 }

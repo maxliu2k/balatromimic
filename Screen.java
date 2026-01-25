@@ -7,3 +7,4 @@ abstract class Screen {
 	abstract void draw(Graphics g);
 }
 
+

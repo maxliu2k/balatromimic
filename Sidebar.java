@@ -30,6 +30,13 @@ class Sidebar {
 	static Button sd;
 	static Button cc;
 	static Button mc;
+	static boolean cashTransitionActive;
+	static boolean cashOverlayStarted;
+	static double cashTransitionStart;
+	static int sdBaseX;
+	static int sdBaseY;
+	static int sdBaseL;
+	static int sdBaseW;
 	static Button ad;
 	static Button bd;
 	static Button md;
@@ -98,6 +105,12 @@ class Sidebar {
 		pd.setFormat(20, 40, 22, 0);
 		sd = new Button(25, 220, 290, 60, "", "Score: 0", new Color(80, 80, 80));
 		sd.setFormat(20, 40, 25, 0);
+		sdBaseX = sd.x;
+		sdBaseY = sd.y;
+		sdBaseL = sd.l;
+		sdBaseW = sd.w;
+		cashTransitionActive = false;
+		cashOverlayStarted = false;
 		cc = new Button(40, 360, 100, 70, "", "", new Color(70, 150, 255));
 		cc.setFormat(20, 47, 30, 0);
 		cc.vib = 3 + 2*Math.random();
@@ -132,6 +145,34 @@ class Sidebar {
 		lastTime = 0;
 		wait = 30;
 		threshold = 1;
+	}
+	static void startCashTransition() {
+		if (cashTransitionActive || Panel.isTransitioning())
+			return;
+		cashTransitionActive = true;
+		cashOverlayStarted = false;
+		cashTransitionStart = Panel.renderTime;
+		sd.text = "";
+		Battle.playing = true;
+	}
+	static void finishToCash() {
+		Battle.shuffled = new LinkedList<>();
+		for (Playing c : deck) {
+			c.selected = false;
+			c.override = false;
+			c.border = c.original;
+		}
+		Panel.screens[2] = new Cash();
+		Panel.screens[2].initialize();
+		Battle.score = 0;
+		sd.text = "Score: 0";
+		sd.x = sdBaseX;
+		sd.y = sdBaseY;
+		sd.l = sdBaseL;
+		sd.w = sdBaseW;
+		sd.color = new Color(80, 80, 80);
+		Battle.playing = false;
+		Sidebar.info.color = new Color(200, 150, 0);
 	}
 	void check(int x, int y) {
 		if (info.field(x, y))
@@ -223,38 +264,38 @@ class Sidebar {
 		dd.text = Integer.toString(discs);
 		md.text = "$" + money;
 		if (hands == 1) {
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (hands == 1 && hd.wobble < 50) {
 					hd.wobble += Math.min(1,1/hd.wobble);
 					try {Thread.sleep(100);} catch (Exception e) {}
 				}
-			}).start();
+			});
 		}
 		else {
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (hands != 1 && hd.wobble > 0) {
 					hd.wobble -= 1;
 					try {Thread.sleep(200);} catch (Exception e) {}
 				}
 				hd.wobble = 0;
-			}).start();
+			});
 		}
 		if (discs == 1) {
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (discs == 1 && dd.wobble < 50) {
 					dd.wobble += Math.min(1,1/dd.wobble);
 					try {Thread.sleep(100);} catch (Exception e) {}
 				}
-			}).start();
+			});
 		}
 		else {
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (discs != 1 && dd.wobble > 0) {
 					dd.wobble -= 1;
 					try {Thread.sleep(200);} catch (Exception e) {}
 				}
 				dd.wobble = 0;
-			}).start();
+			});
 		}
 		g.setColor(new Color(25, 25, 25));
 		g.fillRect(10, 0, 320, 720);
@@ -376,24 +417,47 @@ class Sidebar {
 		g.drawString(jokers.size() + "/" + jslots, 345, 200);
 		g.drawString(cons.size() + "/" + cslots, 1210, 200);
 		if (id) {
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (id && info.wobble < 20) {
 					info.wobble += Math.min(1,1/info.wobble);
 					try {Thread.sleep(100);} catch (Exception e) {}
 				}
-			}).start();
+			});
 		}
 		else {
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (!id && info.wobble > 0) {
 					info.wobble -= 1;
 					try {Thread.sleep(200);} catch (Exception e) {}
 				}
 				info.wobble = 0;
-			}).start();
+			});
 		}
 		info.draw(g);
-		sd.draw(g);
+		if (cashTransitionActive && Panel.s == 1) {
+			double elapsed = Panel.renderTime - cashTransitionStart;
+			double buttonDuration = 15.0;
+			double t = Math.min(1.0, elapsed / buttonDuration);
+			double scale = 1.0 - 0.6 * t;
+			int newL = (int) Math.round(sdBaseL * scale);
+			int newW = (int) Math.round(sdBaseW * scale);
+			sd.l = Math.max(1, newL);
+			sd.w = Math.max(1, newW);
+			sd.x = sdBaseX + (sdBaseL - sd.l) / 2;
+			sd.y = sdBaseY + (sdBaseW - sd.w) / 2;
+			int alpha = (int) Math.round(255 * (1.0 - t));
+			sd.color = new Color(80, 80, 80, Math.max(0, Math.min(255, alpha)));
+			sd.text = "";
+			sd.draw(g);
+			if (!cashOverlayStarted && elapsed >= buttonDuration) {
+				cashOverlayStarted = true;
+				cashTransitionActive = false;
+				Panel.startTransition(2, new Color(80, 80, 80), Sidebar::finishToCash);
+			}
+		}
+		else {
+			sd.draw(g);
+		}
 		if (id) {
 			g.setColor(Color.LIGHT_GRAY);
 			g.fillRect(0, 0, 10, 800);
@@ -645,7 +709,7 @@ class Sidebar {
 	static void progress() {
 		if (Battle.score >= objective) {
 			Battle.playing = true;
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (cc.wobble > 0 || mc.wobble > 0) {
 					if (cc.wobble > 0)
 						cc.wobble -= 0.5;
@@ -657,7 +721,7 @@ class Sidebar {
 				mc.wobble = 0;
 				cc.vib = 2*Math.random() + 3;
 				mc.vib = 2*Math.random() + 3;
-			}).start();
+			});
 			boolean flag = false;
 			for (Playing c : Battle.hand)
 				if (c.enhancement == 'G')
@@ -680,7 +744,7 @@ class Sidebar {
 					c.override = true;
 					c.border = new Color(36, 159, 212);
 					Sidebar.cons.add(new Planet(Planet.planets[Sidebar.getIndex(Sidebar.finalHand)]));
-					new Thread(() -> {
+					Animator.run(() -> {
 						while (c.wobble > -50) {
 							c.wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -693,7 +757,7 @@ class Sidebar {
 							c.wobble -= 0.5;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
 					c.border = c.original;
 					c.override = false;
@@ -736,7 +800,7 @@ class Sidebar {
 					else {
 						j.border = Color.GREEN;
 						j.override = true;
-						new Thread(() -> {
+						Animator.run(() -> {
 							while (j.wobble > -50) {
 								j.wobble -= 1;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -749,7 +813,7 @@ class Sidebar {
 								j.wobble -= 0.5;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
 							}
-						}).start();
+						});
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
 						j.border = j.original;
 						j.override = false;
@@ -759,7 +823,7 @@ class Sidebar {
 				else if (j.name.equals("Egg")) {
 					j.border = Color.ORANGE;
 					j.override = true;
-					new Thread(() -> {
+					Animator.run(() -> {
 						while (j.wobble > -50) {
 							j.wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -772,7 +836,7 @@ class Sidebar {
 							j.wobble -= 0.5;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
 					j.border = j.original;
 					j.override = false;
@@ -794,40 +858,10 @@ class Sidebar {
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				ad.color = ad.color.darker();
 			}
-			new Thread(() -> {
-				sd.text = "";
-				while (sd.l < 3200) {
-					info.color = Color.DARK_GRAY;
-					Battle.sSuit.color = Color.DARK_GRAY;
-					Battle.sRank.color = Color.DARK_GRAY;
-					sd.x -= 4800/Math.max(400, sd.l);
-					sd.y -= 4800/Math.max(400, sd.l);
-					sd.l += 9600/Math.max(400, sd.l);
-					sd.w += 9600/Math.max(400, sd.l);
-					try {Thread.sleep(5);} catch (InterruptedException e) {}
-					if (sd.w > 2860 && !Battle.shuffled.isEmpty()) {
-						Battle.shuffled = new LinkedList<>();
-						for (Playing c : deck) {
-							c.selected = false;
-							c.override = false;
-							c.border = c.original;
-						}
-						Panel.screens[2] = new Cash();
-						Panel.screens[2].initialize();
-						//try {Thread.sleep(100);} catch (Exception e) {}
-					}
-				}
-				Cash.alpha = 255;
-				Panel.s = 2;
-				Battle.score = 0;
-				sd.text = "Score: 0";
-				sd.x = 25;
-				sd.y = 220;
-				sd.l = 290;
-				sd.w = 60;
-				Battle.playing = false;
-				Sidebar.info.color = new Color(200, 150, 0);
-			}).start();
+			info.color = Color.DARK_GRAY;
+			Battle.sSuit.color = Color.DARK_GRAY;
+			Battle.sRank.color = Color.DARK_GRAY;
+			startCashTransition();
 		}
 		else
 			Battle.createHand(Battle.hand.size());
@@ -838,7 +872,7 @@ class Sidebar {
 		c.override = true;
 		c.selected = true;
 		c.border = color;
-		new Thread(() -> {
+		Animator.run(() -> {
 			while (c.wobble > -50) {
 				c.wobble -= 1;
 				try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -851,7 +885,7 @@ class Sidebar {
 				c.wobble -= 0.5;
 				try {Thread.sleep(1);} catch (InterruptedException e) {};
 			}
-		}).start();
+		});
 		Sidebar.chips += chips;
 		Sidebar.cc.color = Sidebar.cc.color.darker();
 		try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -867,7 +901,7 @@ class Sidebar {
 		c.override = true;
 		c.selected = true;
 		c.border = color;
-		new Thread(() -> {
+		Animator.run(() -> {
 			while (c.wobble > -50) {
 				c.wobble -= 1;
 				try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -880,7 +914,7 @@ class Sidebar {
 				c.wobble -= 0.5;
 				try {Thread.sleep(1);} catch (InterruptedException e) {};
 			}
-		}).start();
+		});
 		Sidebar.mult += mult;
 		Sidebar.mc.color = Sidebar.mc.color.darker();
 		try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -896,7 +930,7 @@ class Sidebar {
 		c.override = true;
 		c.selected = true;
 		c.border = color;
-		new Thread(() -> {
+		Animator.run(() -> {
 			while (c.wobble > -50) {
 				c.wobble -= 1;
 				try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -909,7 +943,7 @@ class Sidebar {
 				c.wobble -= 0.5;
 				try {Thread.sleep(1);} catch (InterruptedException e) {};
 			}
-		}).start();
+		});
 		Sidebar.mult *= times;
 		Sidebar.mc.color = new Color(255, 100, 100);
 		try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -925,7 +959,7 @@ class Sidebar {
 		c.override = true;
 		c.selected = true;
 		c.border = color;
-		new Thread(() -> {
+		Animator.run(() -> {
 			while (c.wobble > -50) {
 				c.wobble -= 1;
 				try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -938,7 +972,7 @@ class Sidebar {
 				c.wobble -= 0.5;
 				try {Thread.sleep(1);} catch (InterruptedException e) {};
 			}
-		}).start();
+		});
 		Sidebar.money += cash;
 		Sidebar.md.color = Color.YELLOW;
 		try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -949,20 +983,21 @@ class Sidebar {
 		try {Thread.sleep(250);} catch (InterruptedException e) {}
 	}
 	static void wobble(Card c) {
-		new Thread(() -> {
-			while (c.wobble > -50) {
-				c.wobble -= 1;
-				try {Thread.sleep(1);} catch (InterruptedException e) {};
+		Animator.run(() -> {
+			final double amp = c instanceof Playing ? 35 : 70;
+			final double freq = 10;
+			final long durationMs = 700;
+			long start = System.currentTimeMillis();
+			while (System.currentTimeMillis() - start < durationMs) {
+				double t = (System.currentTimeMillis() - start) / (double) durationMs;
+				double envelope = Math.sin(Math.PI * t);
+				double phase = (Panel.renderTime + c.var) / freq;
+				c.wobble = amp * envelope * Math.sin(phase);
+				try {Thread.sleep(10);} catch (InterruptedException e) {}
 			}
-			while (c.wobble < 35) {
-				c.wobble += 1;
-				try {Thread.sleep(1);} catch (InterruptedException e) {};
-			}
-			while (c.wobble > 0) {
-				c.wobble -= 0.5;
-				try {Thread.sleep(1);} catch (InterruptedException e) {};
-			}
-		}).start();
+			c.wobble = 0;
+		});
 	}
 }
+
 

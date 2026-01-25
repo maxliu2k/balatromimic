@@ -18,6 +18,7 @@ class Battle extends Screen {
 	static int initSize;
 	static int score;
 	static boolean lose;
+	static final int DEAL_DELAY_MS = 600;
 	void initialize() {
 		//create buttons
 		play = new Button(350, 560, 200, 105, "play hand", "Play Hand", Color.DARK_GRAY);
@@ -40,14 +41,6 @@ class Battle extends Screen {
 		Collections.shuffle(temp);
 		for (Playing c : temp)
 			shuffled.offer(c);
-		new Thread(() -> {
-			playing = true;
-			try {Thread.sleep(500);} catch (InterruptedException e) {}
-			createHand(0);
-			playing = false;
-			sSuit.color = new Color(200, 150, 0);
-			sRank.color = new Color(200, 150, 0);
-		}).start();
 		hex = new Button[6];
 		hex[0] = play;
 		hex[1] = discard;
@@ -59,6 +52,16 @@ class Battle extends Screen {
 		played = new ArrayList<>();
 		score = 0;
 		lose = false;
+	}
+	static void dealInitialHand(int delayMs) {
+		Animator.run(() -> {
+			playing = true;
+			try {Thread.sleep(delayMs);} catch (InterruptedException e) {}
+			createHand(0);
+			playing = false;
+			sSuit.color = new Color(200, 150, 0);
+			sRank.color = new Color(200, 150, 0);
+		});
 	}
 	void check(int x, int y) {
 		//prevent buggy interactions
@@ -173,21 +176,11 @@ class Battle extends Screen {
 			g.setColor(Color.RED);
 			g.setFont(Panel.fonts[150]);
 			g.drawString("GAME OVER", 400, 350);
-			new Thread(() -> {
+			Animator.run(() -> {
 				try {Thread.sleep(5000);} catch (InterruptedException e) {}
 				//Panel.timer.stop();
 				Balatro.j.setVisible(false);
-			}).start();
-		}
-		if (alpha > 0) {
-			if (Panel.s == 1)
-				g.setColor(new Color(70, 150, 255, alpha));
-			else
-				g.setColor(new Color(80, 80, 80, alpha));
-			g.fillRect(0, 0, 1280, 720);
-			alpha -= 10;
-			if (alpha < 0) 
-				alpha = 0;
+			});
 		}
 	}
 	static void createHand(int n) {
@@ -195,7 +188,7 @@ class Battle extends Screen {
 		Sidebar.cc.text = "";
 		Sidebar.mc.text = "";
 		//delayed shuffling cards to hand
-		new Thread(() -> {
+		Animator.run(() -> {
 		    for (int i = n; i < Sidebar.handSize; i++) {
 				if (!shuffled.isEmpty()) {
 					try {Thread.sleep(80);} catch (InterruptedException e) {}
@@ -211,7 +204,7 @@ class Battle extends Screen {
 						Collections.sort(Battle.hand, (b, a) -> a.suit.equals(b.suit) ? a.rNum - b.rNum : a.suit.compareTo(b.suit));
 				}
 		    }
-		}).start();
+		});
 	}
 	static void checkLoss() {
 		//checks if the game is lost if on last hand
@@ -237,7 +230,7 @@ class Battle extends Screen {
 		*/
 		AffineTransform tx = new AffineTransform();
 		tx.translate(640, 360); // move origin to screen center
-		tx.rotate(0.002 * Panel.time); // rotate around that point
+		tx.rotate(0.002 * Panel.renderTime); // rotate around that point
 		tx.translate(-780, -720); // center the image
 		Graphics2D g2d = (Graphics2D) g;
 		Composite oldc = g2d.getComposite();
@@ -247,4 +240,5 @@ class Battle extends Screen {
 		g2d.setComposite(oldc);
 	}
 }
+
 

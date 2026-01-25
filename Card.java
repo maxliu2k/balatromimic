@@ -42,5 +42,9 @@ abstract class Card extends Interactable {
 		c2 = new Color(c2.getRed(),c2.getGreen(),c2.getBlue(),alpha);
 		draw(g, 3, c1, c2);
 	}
+	double wobbleScale() {
+		return 1.0 + Math.min(0.15, Math.abs(wobble) / 350.0);
+	}
 }
+
 

@@ -26,34 +26,18 @@ class Button extends Interactable {
 		amp = a;
 		hold = null;
 	}
-	private static void flash(Button b) {
-		new Thread(() -> {
+	static void flash(Button b) {
+		Animator.run(() -> {
 			b.color = b.color.darker();
 			try {Thread.sleep(250);} catch (InterruptedException ignored) {}
 			b.color = b.color.brighter();
 			try {Thread.sleep(250);} catch (InterruptedException ignored) {}
-		}).start();
+		});
 	}
 	void act() {
 		if (job.equals("battle")) {
-			Menu.first = true;
 			Panel.time = Math.max(Panel.time, 220);
-			new Thread(() -> {
-				Menu.battle.text = "";
-				while (Menu.battle.l < 2200) {
-					Menu.battle.x -= 3200/Menu.battle.l;
-					Menu.battle.y -= 3200/Menu.battle.l;
-					Menu.battle.l += 6400/Menu.battle.l;
-					Menu.battle.w += 6400/Menu.battle.l;
-					try {Thread.sleep(5);} catch (InterruptedException e) {}
-				}
-				Panel.screens[1] = new Battle();
-				Panel.screens[1].initialize();
-				Panel.s = 1;
-				//debug
-				//Sidebar.jokers.add(new Joker("Runner"));
-				//Sidebar.cons.add(new Tarot("Sun"));
-			}).start();
+			Menu.startBattleTransition();
 		}
 		else if (job.equals("secret")) {
 			text = Integer.toString(++Menu.count);
@@ -62,7 +46,7 @@ class Button extends Interactable {
 		}
 		else if (job.equals("quit")) {
 			Panel.time += 300;
-			new Thread(() -> {
+			Animator.run(() -> {
 				Menu.quit.text = "";
 				while (Menu.quit.l < 2200) {
 					Menu.quit.x -= 3200/Menu.quit.l;
@@ -73,7 +57,7 @@ class Button extends Interactable {
 				}
 				//Panel.timer.stop();
 				Balatro.j.setVisible(false);
-			}).start();
+			});
 		}
 		else if (job.equals("sSuit")) {
 			Collections.sort(Battle.hand, (b, a) -> a.suit.equals(b.suit) ? a.rNum - b.rNum : a.suit.compareTo(b.suit));
@@ -130,7 +114,7 @@ class Button extends Interactable {
 		}
 		else if (job.equals("discard") && Battle.selected > 0 && Sidebar.discs > 0) {
 			Battle.playing = true;
-			new Thread(() -> {
+			Animator.run(() -> {
 				for (int i = 0; i < Battle.hand.size(); i++) {
 					Playing c = Battle.hand.get(i);
 					if (c.selected) {
@@ -139,7 +123,7 @@ class Button extends Interactable {
 							c.selected = false;
 							c.border = new Color(143, 67, 230);
 							Sidebar.cons.add(Tarot.get());
-							new Thread(() -> {
+							Animator.run(() -> {
 								while (c.wobble > -50) {
 									c.wobble -= 1;
 									try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -152,7 +136,7 @@ class Button extends Interactable {
 									c.wobble -= 0.5;
 									try {Thread.sleep(1);} catch (InterruptedException e) {};
 								}
-							}).start();
+							});
 							try {Thread.sleep(250);} catch (InterruptedException e) {}
 							c.border = c.original;
 							c.override = false;
@@ -170,7 +154,7 @@ class Button extends Interactable {
 				Panel.screens[1].check(-1, -1);
 				Battle.sSuit.color = new Color(200, 150, 0);
 				Battle.sRank.color = new Color(200, 150, 0);
-			}).start();
+			});
 			Sidebar.discs--;
 			if (Sidebar.discs > 0) {
 				flash(Sidebar.dd);
@@ -196,7 +180,7 @@ class Button extends Interactable {
 			Sidebar.chips = Integer.parseInt(Sidebar.cc.text);
 			Sidebar.mult = Integer.parseInt(Sidebar.mc.text);
 			Sidebar.finalHand = poker;
-			new Thread(() -> {
+			Animator.run(() -> {
 				for (Joker j : Sidebar.jokers) {
 					j.selected = false;
 					j.border = j.original;
@@ -249,8 +233,8 @@ class Button extends Interactable {
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
 						c.use();
 						p.selected = true;
-						new Thread(() -> {
-							new Thread(() -> {
+						Animator.run(() -> {
+							Animator.run(() -> {
 								while (p.wobble > -50) {
 									p.wobble -= 1;
 									try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -263,8 +247,8 @@ class Button extends Interactable {
 									p.wobble -= 0.5;
 									try {Thread.sleep(1);} catch (InterruptedException e) {};
 								}
-							}).start();
-						}).start();
+							});
+						});
 						Sidebar.cc.text = Integer.toString(Sidebar.getStats(Sidebar.finalHand)[0]);
 						Sidebar.cc.color = Sidebar.cc.color.darker();
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -272,7 +256,7 @@ class Button extends Interactable {
 						Sidebar.cc.color = Sidebar.cc.color.brighter();
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
 						p.selected = true;
-						new Thread(() -> {
+						Animator.run(() -> {
 							while (p.wobble > -50) {
 								p.wobble -= 1;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -285,7 +269,7 @@ class Button extends Interactable {
 								p.wobble -= 0.5;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
 							}
-						}).start();
+						});
 						Sidebar.mc.text = Integer.toString(Sidebar.getStats(Sidebar.finalHand)[1]);
 						Sidebar.mc.color = Sidebar.mc.color.darker();
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -293,7 +277,7 @@ class Button extends Interactable {
 						Sidebar.mc.color = Sidebar.mc.color.brighter();
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
 						p.selected = true;
-						new Thread(() -> {
+						Animator.run(() -> {
 							while (p.wobble > -50) {
 								p.wobble -= 1;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -306,7 +290,7 @@ class Button extends Interactable {
 								p.wobble -= 0.5;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
 							}
-						}).start();
+						});
 						Sidebar.pd.text = Sidebar.finalHand + " lv. " + Sidebar.levels[Sidebar.getIndex(Sidebar.finalHand)];
 						Sidebar.pd.color = Sidebar.pd.color.darker();
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -324,7 +308,7 @@ class Button extends Interactable {
 						j.override = true;
 						j.selected = true;
 						j.border = Color.ORANGE;
-						new Thread(() -> {
+						Animator.run(() -> {
 							while (j.wobble > -50) {
 								j.wobble -= 1;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -337,7 +321,7 @@ class Button extends Interactable {
 								j.wobble -= 1;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
 							}
-						}).start();
+						});
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
 						j.selected = false;
 						j.override = false;
@@ -351,7 +335,7 @@ class Button extends Interactable {
 						j.override = true;
 						j.selected = true;
 						j.border = Color.DARK_GRAY;
-						new Thread(() -> {
+						Animator.run(() -> {
 							while (j.wobble > -50) {
 								j.wobble -= 1;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -364,7 +348,7 @@ class Button extends Interactable {
 								j.wobble -= 1;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
 							}
-						}).start();
+						});
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
 						j.selected = false;
 						j.override = false;
@@ -380,7 +364,7 @@ class Button extends Interactable {
 						j.border = Color.ORANGE;
 					else
 						j.border = new Color(140, 0, 200);
-					new Thread(() -> {
+					Animator.run(() -> {
 						while (j.wobble > -50) {
 							j.wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -393,7 +377,7 @@ class Button extends Interactable {
 							j.wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
 					j.selected = false;
 					j.override = false;
@@ -498,7 +482,7 @@ class Button extends Interactable {
 				Panel.screens[1].check(-1, -1);
 				Battle.sSuit.color = new Color(200, 150, 0);
 				Battle.sRank.color = new Color(200, 150, 0);
-			}).start();
+			});
 			Sidebar.hands--;
 			if (Sidebar.hands != 0) {
 				flash(Sidebar.hd);
@@ -508,62 +492,12 @@ class Button extends Interactable {
 		}
 		else if (job.equals("cash")) {
 			Sidebar.money += ((Cash) Panel.screens[2]).money;
-			new Thread(() -> {
+			Animator.run(() -> {
 				Sidebar.md.color = Color.YELLOW;
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				Sidebar.md.color = new Color(80, 80, 80);
-			}).start();
-			new Thread(() -> {
-				Battle.playing = true;
-				try {Thread.sleep(500);} catch (InterruptedException e) {}
-				Cash.out.text = "";
-				Cash.out.amp = 0;
-				try {Thread.sleep(10);} catch (InterruptedException e) {}
-				while (Cash.out.l < 1800) {
-					try {Thread.sleep(1);} catch (InterruptedException e) {}
-					Cash.out.x -= 4800/Cash.out.l;
-					Cash.out.y -= 4800/Cash.out.l;
-					Cash.out.l += 9600/Cash.out.l;
-					Cash.out.w += 9600/Cash.out.l;
-					try {Thread.sleep(5);} catch (InterruptedException e) {}
-					if (Cash.out.w > 1280 && !Sidebar.db) {
-						Panel.screens[0].initialize();
-						Panel.screens[3] = new Shop();
-						Panel.screens[3].initialize();
-						Sidebar.db = true;
-						Sidebar.hands = Sidebar.maxHands;
-						Sidebar.discs = Sidebar.maxDiscs;
-						Sidebar.hd.color = new Color(70, 150, 255);
-						Sidebar.dd.color = Color.RED;
-						Panel.screens[3].check(-1, -1);
-					}
-				}
-				Panel.s = 3;	
-				try {Thread.sleep(10);} catch (InterruptedException e) {}
-				Shop.alpha = 255;
-				Battle.playing = false;
-				if (Sidebar.blind.equals("Small")) {
-					Sidebar.objective = (int) (Sidebar.levelValues[Sidebar.ante] * 1.5);
-					Sidebar.bd.color = new Color(200, 150, 0);
-					Sidebar.blindColor = new Color(200, 150, 0);
-					Sidebar.bd.setFormat(95, 40, 25, 0);
-					Sidebar.blind = "Big";
-				}
-				else if (Sidebar.blind.equals("Big")) {
-					Sidebar.objective = (int) (Sidebar.levelValues[Sidebar.ante] * 2);
-					Sidebar.bd.color = Color.RED;
-					Sidebar.blindColor = Color.RED;
-					Sidebar.bd.setFormat(85, 40, 25, 0);
-					Sidebar.blind = "Boss";
-				}
-				else if (Sidebar.blind.equals("Boss")) {
-					Sidebar.objective = (int) (Sidebar.levelValues[Sidebar.ante]);
-					Sidebar.bd.color = Color.BLUE;
-					Sidebar.blindColor = Color.BLUE;
-					Sidebar.bd.setFormat(80, 40, 25, 0);
-					Sidebar.blind = "Small";
-				}
-			}).start();
+			});
+			Cash.startCashTransition();
 		}
 		else if (job.equals("info")) {
 			Sidebar.id = !Sidebar.id;
@@ -578,7 +512,7 @@ class Button extends Interactable {
 			if (c instanceof Joker)
 				c.border = ((Joker) c).edition == ' ' ? c.original.darker() : ((Joker) c).getEdition();
 			Sidebar.selected = null;
-			new Thread(() -> {
+			Animator.run(() -> {
 				Battle.playing = true;
 				if (c instanceof Joker) {
 					((Joker) c).sold();
@@ -601,7 +535,7 @@ class Button extends Interactable {
 				Battle.sSuit.color = new Color(200, 150, 0);
 				Battle.sRank.color = new Color(200, 150, 0);
 				Sidebar.addMoney(new Playing(), Color.BLACK, c instanceof Joker ? ((Joker) c).sell : c.cost / 2);
-			}).start();
+			});
 		}
 		else if (job.equals("use")) {
 			if (Sidebar.selected == null)
@@ -611,18 +545,18 @@ class Button extends Interactable {
 			if (c == null || !c.useable())
 				return;
 			Sidebar.selected = null;
-			new Thread(() -> {
+			Animator.run(() -> {
 				Battle.playing = true;
 				c.selected = false;
 				Sidebar.use.text = "Use";
 				if (!Sidebar.cons.contains(c)) {
-					new Thread(() -> {
+					Animator.run(() -> {
 						Sidebar.money -= c.cost;
 						Sidebar.md.color = Sidebar.md.color.darker();
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
 						Sidebar.md.color = Sidebar.md.color.brighter();
 						try {Thread.sleep(750);} catch (InterruptedException e) {}
-					}).start();
+					});
 				}
 				Sidebar.cons.remove(c);
 				if (Panel.s == 3 && Shop.selected != null) {
@@ -649,8 +583,8 @@ class Button extends Interactable {
 					try {Thread.sleep(1000);} catch (InterruptedException e) {}
 					c.use();
 					p.selected = true;
-					new Thread(() -> {
-						new Thread(() -> {
+					Animator.run(() -> {
+						Animator.run(() -> {
 							while (c.wobble > -50) {
 								c.wobble -= 1;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -663,8 +597,8 @@ class Button extends Interactable {
 								c.wobble -= 0.5;
 								try {Thread.sleep(1);} catch (InterruptedException e) {};
 							}
-						}).start();
-					}).start();
+						});
+					});
 					Sidebar.cc.text = Integer.toString(Sidebar.getStats(p.poker)[0]);
 					Sidebar.cc.color = Sidebar.cc.color.darker();
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -672,7 +606,7 @@ class Button extends Interactable {
 					Sidebar.cc.color = Sidebar.cc.color.brighter();
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
 					p.selected = true;
-					new Thread(() -> {
+					Animator.run(() -> {
 						while (c.wobble > -50) {
 							c.wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -685,7 +619,7 @@ class Button extends Interactable {
 							c.wobble -= 0.5;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 					Sidebar.mc.text = Integer.toString(Sidebar.getStats(p.poker)[1]);
 					Sidebar.mc.color = Sidebar.mc.color.darker();
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -693,7 +627,7 @@ class Button extends Interactable {
 					Sidebar.mc.color = Sidebar.mc.color.brighter();
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
 					p.selected = true;
-					new Thread(() -> {
+					Animator.run(() -> {
 						while (c.wobble > -50) {
 							c.wobble -= 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -706,7 +640,7 @@ class Button extends Interactable {
 							c.wobble -= 0.5;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 					Sidebar.pd.text = p.poker + " lv. " + Sidebar.levels[Sidebar.getIndex(p.poker)];
 					Sidebar.pd.color = Sidebar.pd.color.darker();
 					try {Thread.sleep(250);} catch (InterruptedException e) {}
@@ -733,7 +667,7 @@ class Button extends Interactable {
 				Sidebar.slot = null;
 				Battle.sSuit.color = new Color(200, 150, 0);
 				Battle.sRank.color = new Color(200, 150, 0);
-			}).start();
+			});
 		}
 		else if (job.equals("buy")) {
 			if (Shop.selected != null) {
@@ -754,10 +688,10 @@ class Button extends Interactable {
 				if (buy instanceof Playing && Sidebar.money >= buy.cost) {
 					Shop.selected = null;
 					Sidebar.selected = null;
-					new Thread(() -> {
+					Animator.run(() -> {
 						try {Thread.sleep(10);} catch (InterruptedException e) {}
 						Panel.side.check(-1, -1);
-					}).start();
+					});
 					Shop.slots[index] = null;
 					Sidebar.deck.add((Playing) buy);
 					Sidebar.money -= buy.cost;
@@ -767,10 +701,10 @@ class Button extends Interactable {
 				}
 				if (Sidebar.money >= buy.cost) { 
 					Shop.selected = null;
-					new Thread(() -> {
+					Animator.run(() -> {
 						try {Thread.sleep(10);} catch (InterruptedException e) {}
 						Panel.side.check(-1, -1);
-					}).start();
+					});
 					Sidebar.selected = buy;
 					Shop.slots[index] = null;
 					Sidebar.money -= buy.cost;
@@ -788,13 +722,13 @@ class Button extends Interactable {
 		else if (job.equals("reroll")) {
 			if (Sidebar.money >= Shop.temproll) {
 				if (Sidebar.money >= 2*Shop.temproll + 1) {
-					new Thread(() -> {
+					Animator.run(() -> {
 						Shop.roll.color = new Color(24, 214, 74).darker();
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
 						Shop.roll.color = new Color(24, 214, 74);
 						try {Thread.sleep(250);} catch (InterruptedException e) {}
-					}).start();
-					new Thread(() -> {
+					});
+					Animator.run(() -> {
 						double oldw = Shop.roll.wobble;
 						while (Shop.roll.wobble > -50) {
 							Shop.roll.wobble -= 1;
@@ -804,7 +738,7 @@ class Button extends Interactable {
 							Shop.roll.wobble += 1;
 							try {Thread.sleep(1);} catch (InterruptedException e) {};
 						}
-					}).start();
+					});
 				}
 				if (Shop.selected != null)
 					Sidebar.selected = null;
@@ -813,173 +747,17 @@ class Button extends Interactable {
 				Sidebar.money -= Shop.temproll;
 				flash(Sidebar.md);
 				if (Shop.temproll == 5 && Joker.contains("Chaos")) {
-					new Thread(() -> {
+					Animator.run(() -> {
 						try {Thread.sleep(500);} catch (InterruptedException e) {}
 						Sidebar.addMoney(Joker.get("Chaos").get(0), Color.BLACK, 5);
-					}).start();
+					});
 				}
 				Shop.temproll++;
 				Shop.roll.text = "Reroll-$" + Shop.temproll;
 			}
 		}
 		else if (job.equals("next")) {
-			if (!Battle.playing) { 
-				new Thread(() -> {
-					Battle.playing = true;
-					Shop.next.text = "";
-					tracker = true;
-					while (Shop.next.l < 2200) {
-						try {Thread.sleep(1);} catch (InterruptedException e) {}
-						Shop.next.x -= 3200/Shop.next.l;
-						Shop.next.y -= 3200/Shop.next.l;
-						Shop.next.l += 6400/Shop.next.l;
-						Shop.next.w += 6400/Shop.next.l;
-						try {Thread.sleep(5);} catch (InterruptedException e) {}
-						if (Shop.next.w > 1670 && tracker) {
-							tracker = false;
-							if (Shop.selected != null) {
-								Shop.selected = null;
-								Sidebar.selected = null;
-							}
-							if (Sidebar.selected == null) {
-								Sidebar.use.color = Color.DARK_GRAY;
-								Sidebar.use.text = "Use";
-							}
-							Battle.hand = new ArrayList<>();
-							for (int i = 0; i < Sidebar.jokers.size(); i++) {
-								if (Sidebar.jokers.get(i).name.equals("Dagger") && i < Sidebar.jokers.size() - 1) {
-									Joker dagger = Sidebar.jokers.get(i);
-									Joker c = Sidebar.jokers.get(i + 1);
-									new Thread(() -> {
-										try {Thread.sleep(1500);} catch (InterruptedException e) {}
-										c.override = false;
-										c.selected = false;
-										c.border = ((Joker) c).edition == ' ' ? c.original.darker() : ((Joker) c).getEdition();
-										((Joker) c).sold();
-										Joker.update();
-										dagger.count += 2 * c.sell;
-										new Thread(() -> {
-											dagger.override = true;
-											dagger.selected = true;
-											dagger.border = Color.ORANGE;
-											new Thread(() -> {
-												while (dagger.wobble > -50) {
-													dagger.wobble -= 1;
-													try {Thread.sleep(1);} catch (InterruptedException e) {};
-												}
-												while (dagger.wobble < 30) {       // change here
-													dagger.wobble += 1;
-													try {Thread.sleep(1);} catch (InterruptedException e) {};
-												}
-												while (dagger.wobble > 0) {        // and here
-													dagger.wobble -= 1;
-													try {Thread.sleep(1);} catch (InterruptedException e) {};
-												}
-											}).start();
-											try {Thread.sleep(250);} catch (InterruptedException e) {}
-											dagger.selected = false;
-											dagger.override = false;
-											dagger.border = dagger.original;
-										}).start();
-										for (int j = 255; j > 1; j-=2) {
-											c.alpha = j;
-											try {Thread.sleep(6);} catch (InterruptedException e) {}
-										}
-										Sidebar.jokers.remove(c);
-									}).start();
-								}
-								if (Sidebar.jokers.get(i).name.equals("Marble")) {
-									Joker marble = Sidebar.jokers.get(i);
-									Playing stone = new Playing();
-									stone.enhancement = 'T';
-									Sidebar.deck.add(stone);
-									new Thread(() -> {
-										try {Thread.sleep(1500);} catch (InterruptedException e) {}
-										marble.override = true;
-										marble.selected = true;
-										marble.border = Color.BLACK;
-										new Thread(() -> {
-											while (marble.wobble > -50) {
-												marble.wobble -= 1;
-												try {Thread.sleep(1);} catch (InterruptedException e) {};
-											}
-											while (marble.wobble < 30) {       // change here
-												marble.wobble += 1;
-												try {Thread.sleep(1);} catch (InterruptedException e) {};
-											}
-											while (marble.wobble > 0) {        // and here
-												marble.wobble -= 1;
-												try {Thread.sleep(1);} catch (InterruptedException e) {};
-											}
-										}).start();
-										try {Thread.sleep(250);} catch (InterruptedException e) {}
-										marble.selected = false;
-										marble.override = false;
-										marble.border = marble.original;
-									}).start();
-								}
-								if (Sidebar.jokers.get(i).name.equals("Burglar")) {
-									Joker burglar = Sidebar.jokers.get(i);
-									new Thread(() -> {
-										try {Thread.sleep(1500);} catch (InterruptedException e) {}
-										burglar.override = true;
-										burglar.selected = true;
-										burglar.border = Color.BLACK;
-										new Thread(() -> {
-											while (burglar.wobble > -50) {
-												burglar.wobble -= 1;
-												try {Thread.sleep(1);} catch (InterruptedException e) {};
-											}
-											while (burglar.wobble < 30) {       // change here
-												burglar.wobble += 1;
-												try {Thread.sleep(1);} catch (InterruptedException e) {};
-											}
-											while (burglar.wobble > 0) {        // and here
-												burglar.wobble -= 1;
-												try {Thread.sleep(1);} catch (InterruptedException e) {};
-											}
-										}).start();
-										try {Thread.sleep(250);} catch (InterruptedException e) {}
-										burglar.selected = false;
-										burglar.override = false;
-										burglar.border = burglar.original;
-									}).start();
-									new Thread(() -> {
-										try {Thread.sleep(1500);} catch (InterruptedException e) {}
-										Sidebar.hands += 3;
-										Sidebar.discs = 0;
-										Sidebar.dd.color = Color.DARK_GRAY;
-										flash(Sidebar.hd);
-									}).start();
-								}
-							}
-							ArrayList<Playing> temp = (ArrayList<Playing>) Sidebar.deck.clone();
-							Collections.shuffle(temp);
-							for (Playing c : temp) {
-								c.selected = false;
-								c.override = false;
-								Battle.shuffled.offer(c);
-							}
-							Battle.selected = 0;
-						}
-					}
-					Panel.s = 1;
-					Battle.alpha = 255;
-					Battle.playing = false;
-					Battle.sSuit.color = new Color(200, 150, 0);
-					Battle.sRank.color = new Color(200, 150, 0);
-					try {Thread.sleep(1000);} catch (InterruptedException e) {}
-					for (Joker j : Sidebar.jokers) {
-						if (j.name.equals("Dagger")) {
-							int index = Sidebar.jokers.indexOf(j);
-							if (index + 1 < Sidebar.jokers.size()) {
-								
-							}
-						}
-					}
-					Battle.createHand(0);
-				}).start();
-			}
+			Shop.startNextTransition();
 		}
 		else if (job.equals("shift")) {
 			boolean flag = false;
@@ -1016,4 +794,5 @@ class Button extends Interactable {
 		g2d.setTransform(old);
 	}
 }
+
 

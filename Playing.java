@@ -134,6 +134,12 @@ class Playing extends Editionable {
 		Graphics2D g2d = (Graphics2D) g;
 		AffineTransform old = g2d.getTransform();
 		g2d.rotate((double) 1.5*wobble/300, x + l/2.0, y + w/2.0);
+		double scale = wobbleScale();
+		double cx = x + l/2.0;
+		double cy = y + w/2.0;
+		g2d.translate(cx, cy);
+		g2d.scale(scale, scale);
+		g2d.translate(-cx, -cy);
 		//draws basic card
 		if (breaking)
 			draw(g, 3, new Color(border.getRed(), border.getGreen(), border.getBlue(), alpha), 
@@ -343,4 +349,5 @@ class Playing extends Editionable {
 		g2d.setTransform(old);
 	}
 }
+
 

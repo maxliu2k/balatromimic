@@ -214,6 +214,12 @@ class Joker extends Editionable {
 		Graphics2D g2d = (Graphics2D) g;
 		AffineTransform old = g2d.getTransform();
 		g2d.rotate((double) wobble/300, x + l/2.0, y + w/2.0);
+		double scale = wobbleScale();
+		double cx = x + l/2.0;
+		double cy = y + w/2.0;
+		g2d.translate(cx, cy);
+		g2d.scale(scale, scale);
+		g2d.translate(-cx, -cy);
 		if (original == null)
 			original = Color.WHITE;
 		original = new Color(original.getRed(),original.getGreen(),original.getBlue(),alpha);
@@ -571,7 +577,7 @@ class Joker extends Editionable {
 			selected = true;
 			border = Color.BLACK;
 			Sidebar.wobble(c);;
-			new Thread(() -> {
+			Animator.run(() -> {
 				while (wobble > -50) {
 					wobble -= 1;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
@@ -584,7 +590,7 @@ class Joker extends Editionable {
 					wobble -= 0.5;
 					try {Thread.sleep(1);} catch (InterruptedException e) {};
 				}
-			}).start();
+			});
 			try {Thread.sleep(250);} catch (InterruptedException e) {}
 			selected = false;
 			border = original;
@@ -632,26 +638,26 @@ class Joker extends Editionable {
 			Sidebar.jslots--;
 		if (name.equals("Credit Card")) {
 			Sidebar.money -= 20;
-			new Thread(() -> {
+			Animator.run(() -> {
 				Sidebar.md.color = Sidebar.md.color.darker();
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				Sidebar.md.color = Sidebar.md.color.brighter();
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
-			}).start();
+			});
 		}
 	}
 	void bought() {
 		if (edition == 'N')
 			Sidebar.jslots++;
 		if (name.equals("Credit Card")) {
-			new Thread(() -> {
+			Animator.run(() -> {
 				try {Thread.sleep(500);} catch (InterruptedException e) {}
 				Sidebar.money += 20;
 				Sidebar.md.color = Sidebar.md.color.darker();
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
 				Sidebar.md.color = Sidebar.md.color.brighter();
 				try {Thread.sleep(250);} catch (InterruptedException e) {}
-			}).start();
+			});
 		}
 	}
 	static void update() {
@@ -699,4 +705,5 @@ class Joker extends Editionable {
 		return js;
 	}
 }
+
 
